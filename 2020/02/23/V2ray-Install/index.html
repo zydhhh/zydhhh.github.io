@@ -3,7 +3,7 @@
 
 <head>
   
-  <title>about - 327星云</title>
+  <title>V2Ray+Caddy配置v2+ws+tls安装过程 - 327星云</title>
   <meta charset="UTF-8">
   <meta name="description" content="黑暗森林中的一颗菜">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -17,16 +17,19 @@
     <meta name="baidu-site-verification" content="wY8NJVd8mV" />
 
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/png" />
-  <meta name="description" content="MeSupposedly, it is a human being.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://blog.yaodong.life/about/about.html">
+  <meta name="description" content="安装环境：CentOS 7 x64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="V2Ray+Caddy配置v2+ws+tls安装过程">
+<meta property="og:url" content="http://blog.yaodong.life/2020/02/23/V2ray-Install/index.html">
 <meta property="og:site_name" content="327星云">
-<meta property="og:description" content="MeSupposedly, it is a human being.">
-<meta property="article:published_time" content="2020-01-07T05:26:19.000Z">
-<meta property="article:modified_time" content="2020-01-07T05:36:54.108Z">
+<meta property="og:description" content="安装环境：CentOS 7 x64">
+<meta property="og:image" content="https://i.loli.net/2020/03/02/HDJXgCiPLz3tEN6.jpg">
+<meta property="article:published_time" content="2020-02-23T08:59:09.000Z">
+<meta property="article:modified_time" content="2020-03-02T07:15:53.848Z">
 <meta property="article:author" content="Yaodong">
+<meta property="article:tag" content="富强">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/03/02/HDJXgCiPLz3tEN6.jpg">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@0.4.3/dist/css/mdui.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/atom-one-dark.css">
    
@@ -34,7 +37,7 @@
   
   
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1038733_0xvrvpg9c0r.css">
-  <link rel="stylesheet" href="/css/style.css?v=1583133379366">
+  <link rel="stylesheet" href="/css/style.css?v=1583133379427">
 <meta name="generator" content="Hexo 4.2.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -192,20 +195,101 @@
         <div class="nexmoe-post">
     <div class="nexmoe-post-cover"> 
         
-            <img src="https://i.loli.net/2020/03/02/FScy8GPADn3LXUa.png">
+        <img src="https://i.loli.net/2020/01/06/Fvfj6o3J42bcLn5.png">
         
-        <h1>about</h1>
+        <h1>V2Ray+Caddy配置v2+ws+tls安装过程</h1>
     </div>
   <div class="nexmoe-post-meta">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2020年01月07日</a>
-    <a><i class="nexmoefont icon-areachart"></i>6 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2020年02月23日</a>
+    <a><i class="nexmoefont icon-areachart"></i>447 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
     
+      <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%AF%8C%E5%BC%BA/">富强</a><a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%AF%8C%E5%BC%BA/V2ray/">V2ray</a>
+    
+    
+      <a class="nexmoefont icon-tag-fill -link" href="/tags/%E5%AF%8C%E5%BC%BA/" rel="tag">富强</a>
     
   </div>
   <article>
-    <h2 id="Me"><a href="#Me" class="headerlink" title="Me"></a>Me</h2><p>Supposedly, it is a human being.</p>
-
+    <p>安装环境：CentOS 7 x64</p>
+<a id="more"></a>
+<h2 id="V2Ray-安装"><a href="#V2Ray-安装" class="headerlink" title="V2Ray 安装"></a>V2Ray 安装</h2><p>官方一键</p>
+<pre><code>bash &lt;(curl -L -s https://install.direct/go.sh)
+</code></pre><h2 id="Caddy-安装"><a href="#Caddy-安装" class="headerlink" title="Caddy 安装"></a>Caddy 安装</h2><p>因为在另一处服务器我已经使用了官方默认的Let’s Encrypt申请SSL证书，有数数量限制，这里我使用了Cloudflare的SSL证书，因此需要安装tls.dns.cloudflare插件</p>
+<pre><code>curl https://getcaddy.com | bash -s personal tls.dns.cloudflare
+</code></pre><h2 id="Caddy-配置"><a href="#Caddy-配置" class="headerlink" title="Caddy 配置"></a>Caddy 配置</h2><h3 id="软件配置"><a href="#软件配置" class="headerlink" title="软件配置"></a>软件配置</h3><p>在<strong>/etc/caddy</strong>目录创建<strong>Caddyfile</strong>文件</p>
+<pre><code>abc.com {  
+    tls {
+        dns cloudflare
+    }
+    proxy /ray localhost:10000 { 
+        websocket 
+        header_upstream -Origin 
+    } 
+}
+</code></pre><h3 id="使用systemctl控制caddy"><a href="#使用systemctl控制caddy" class="headerlink" title="使用systemctl控制caddy"></a>使用systemctl控制caddy</h3><p><a href="https://github.com/caddyserver/caddy/tree/master/dist/init/linux-systemd" target="_blank" rel="noopener">跟着做</a></p>
+<h3 id="Cloudflare设置"><a href="#Cloudflare设置" class="headerlink" title="Cloudflare设置"></a>Cloudflare设置</h3><p>为域名添加dns记录，注意只开启dns不使用cdn，即确保小云朵是灰色的而不是橙色</p>
+<h3 id="Cloudflare-环境变量设置"><a href="#Cloudflare-环境变量设置" class="headerlink" title="Cloudflare 环境变量设置"></a>Cloudflare 环境变量设置</h3><p>Caddy使用Cloudflare的SSL证书，需要设置两个环境变量</p>
+<pre><code>CLOUDFLARE_EMAIL
+CLOUDFLARE_API_KEY
+</code></pre><p>在/etc/systemd/system/caddy.service文件的[Service]下加入</p>
+<pre><code>Environment=CLOUDFLARE_EMAIL=XXXX
+Environment=CLOUDFLARE_API_KEY=XXXXX
+</code></pre><p>CLOUDFLARE_EMAIL 即你的cloudflare账户注册邮箱</p>
+<p>CLOUDFLARE_API_KEY 在My Profile下找到</p>
+<p><img src="https://i.loli.net/2020/03/02/HDJXgCiPLz3tEN6.jpg" alt="TIM截图20200302142930.jpg"></p>
+<h3 id="启动Caddy并设置自启"><a href="#启动Caddy并设置自启" class="headerlink" title="启动Caddy并设置自启"></a>启动Caddy并设置自启</h3><p>启动Caddy</p>
+<pre><code>systemctl daemon-reload
+systemctl start caddy.service
+systemctl status caddy.service
+</code></pre><p>确认无误后</p>
+<pre><code>systemctl enable caddy.service
+</code></pre><h2 id="V2ray-配置"><a href="#V2ray-配置" class="headerlink" title="V2ray 配置"></a>V2ray 配置</h2><pre><code>{
+  &quot;inbounds&quot;: [{
+    &quot;port&quot;: 10000,
+    &quot;listen&quot;: &quot;127.0.0.1&quot;,
+    &quot;protocol&quot;: &quot;vmess&quot;,
+    &quot;settings&quot;: {
+      &quot;clients&quot;: [
+        {
+          &quot;id&quot;: &quot;79710804-a19a-4514-b2d0-1ed78e4c232f&quot;,
+          &quot;level&quot;: 1,
+          &quot;alterId&quot;: 64
+        }
+      ]
+    },
+    &quot;streamSettings&quot;: {
+      &quot;network&quot;: &quot;ws&quot;,
+      &quot;wsSettings&quot;: {
+        &quot;path&quot;: &quot;/ray&quot;
+      }
+    }
+  }],
+  &quot;outbounds&quot;: [{
+    &quot;protocol&quot;: &quot;freedom&quot;,
+    &quot;settings&quot;: {}
+  },{
+    &quot;protocol&quot;: &quot;blackhole&quot;,
+    &quot;settings&quot;: {},
+    &quot;tag&quot;: &quot;blocked&quot;
+  }],
+  &quot;routing&quot;: {
+    &quot;rules&quot;: [
+      {
+        &quot;type&quot;: &quot;field&quot;,
+        &quot;ip&quot;: [&quot;geoip:private&quot;],
+        &quot;outboundTag&quot;: &quot;blocked&quot;
+      }
+    ]
+  }
+}
+</code></pre><h2 id="firewall防火墙设置（选）"><a href="#firewall防火墙设置（选）" class="headerlink" title="firewall防火墙设置（选）"></a>firewall防火墙设置（选）</h2><p>由于vultr的centos 7自带firewall防火墙，需要手动开放443端口</p>
+<pre><code>firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=443/udp --permanent
+firewall-cmd --reload
+</code></pre><h2 id="BBR安装（选）"><a href="#BBR安装（选）" class="headerlink" title="BBR安装（选）"></a>BBR安装（选）</h2><p>一键脚本</p>
+<pre><code>wget -N &quot;https://github.000060000.xyz/tcp.sh&quot; &amp;&amp; chmod +x tcp.sh &amp;&amp; ./tcp.sh
+</code></pre>
   </article>
   
     
@@ -241,7 +325,7 @@
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
-<script src="/js/app.js?v=1583133379384"></script>
+<script src="/js/app.js?v=1583133379435"></script>
 <script src="https://cdn.jsdelivr.net/npm/lazysizes@5.1.0/lazysizes.min.js"></script>
 
 
